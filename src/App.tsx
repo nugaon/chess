@@ -1,5 +1,5 @@
 import './App.css';
-import ChassTable from './chess-table';
+import ChessTable from './chess-table';
 import ChessEngine from './providers/chess-engine';
 
 function App() {
@@ -7,7 +7,7 @@ function App() {
   return (
     <div className="App">
       <ChessEngine>
-        <ChassTable></ChassTable>
+        <ChessTable></ChessTable>
       </ChessEngine>
     </div>
   );

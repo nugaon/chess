@@ -30,8 +30,11 @@ export function Provider({ children }: Props): ReactElement {
     const data = await bee.downloadData(hash)
     try {
       const starting: SwarmGameData = data.json() as unknown as SwarmGameData
-      game.load(starting.fen)
-      setStartingFen(starting.fen)
+      for (const el of starting.history) {
+        game.move(el)
+      }
+      if(game.fen() !== starting.fen) throw Error
+      setStartingFen(game.fen())
     } catch(e) {
       alert(`The loaded data "${data.text()}" does not have a correct format`)
     }

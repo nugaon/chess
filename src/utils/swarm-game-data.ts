@@ -1,10 +1,13 @@
+
 export interface SwarmGameData {
-  fen: string
+  fen: string,
+  history: string[],
 }
 
-export function uploadString(fen: string): string {
+export function uploadString(fen: string, history: string[]): string {
   return JSON.stringify({
-    fen
+    fen,
+    history,
   })
 }
 

@@ -16,7 +16,7 @@ export default function Menu() {
   const [stateUrl, setStateUrl] = useState('')
 
   async function uploadToSwarm(bee: Bee, game: ChessInstance) {
-    const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen()))
+    const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen(), game.history()))
     setStateUrl(setSwarmHashToUrl(resp.reference))
     setStateHash(resp.reference)
   }

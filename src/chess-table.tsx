@@ -1,6 +1,6 @@
 import { Square } from 'chess-types';
 import Chessboard from 'chessboardjsx';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Context as ChessContext } from './providers/chess-engine';
 
 type Piece =
@@ -14,7 +14,7 @@ export default function HumanVsHuman () {
   const [squareStyles, setSquareStyles] = useState<any>({})
   const [pieceSquare, setPieceSquare] = useState<Square | null>(null)
   const [history, setHistory] = useState<Array<any>>([])
-  const { game } = useContext(ChessContext)
+  const { game, startingFen } = useContext(ChessContext)
 
   const squareStyling = ({ pieceSquare, history }: { pieceSquare: string | null, history: Array<any> }) => {
     const sourceSquare = history.length && history[history.length - 1].from;
@@ -155,6 +155,10 @@ export default function HumanVsHuman () {
 
   const onSquareRightClick = (square: Square) =>
     setSquareStyles({ [square]: { backgroundColor: 'deepPink' } })
+
+  useEffect(() => {
+    setFen(startingFen)
+  }, [startingFen])
 
   return (
     <div style={{

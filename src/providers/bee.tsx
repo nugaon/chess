@@ -26,4 +26,6 @@ export function Provider({ children }: Props): ReactElement {
   )
 }
 
+export const zeroPostageId = '0000000000000000000000000000000000000000000000000000000000000000'
+
 export default Provider

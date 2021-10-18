@@ -1,7 +1,7 @@
 import { ChessInstance } from 'chess-types'
 import * as Chess from 'chess.js'
 import { createContext, ReactChild, ReactElement, useContext, useEffect, useState } from 'react'
-import { SwarmGameData } from '../utils/swarm-game-data'
+import { getSwarmHashFromUrl, SwarmGameData } from '../utils/swarm-game-data'
 import { Context as BeeContext } from './bee'
 
 interface ContextInterface {
@@ -38,8 +38,7 @@ export function Provider({ children }: Props): ReactElement {
   }
 
   useEffect(() => {
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const baseSwarmHash = urlSearchParams.get('base')
+    const baseSwarmHash = getSwarmHashFromUrl()
     if(baseSwarmHash) {
       loadGameFromSwarm(baseSwarmHash)
     }

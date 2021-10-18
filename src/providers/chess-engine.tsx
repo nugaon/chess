@@ -1,7 +1,7 @@
 import { ChessInstance } from 'chess-types'
 import * as Chess from 'chess.js'
 import { createContext, ReactChild, ReactElement, useContext, useEffect, useState } from 'react'
-import { SwarmGameData } from '../swarm-game-data'
+import { SwarmGameData } from '../utils/swarm-game-data'
 import { Context as BeeContext } from './bee'
 
 interface ContextInterface {

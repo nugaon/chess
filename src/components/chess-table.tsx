@@ -1,7 +1,7 @@
 import { Square } from 'chess-types';
 import Chessboard from 'chessboardjsx';
 import { useContext, useEffect, useState } from 'react';
-import { Context as ChessContext } from './providers/chess-engine';
+import { Context as ChessContext } from '../providers/chess-engine';
 
 type Piece =
   'wP' | 'wN' | 'wB' | 'wR' | 'wQ' | 'wK' |

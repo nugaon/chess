@@ -1,9 +1,9 @@
 import type { Bee } from '@ethersphere/bee-js';
 import type { ChessInstance, Move } from 'chess-types';
 import { useContext, useState } from 'react';
-import { Context as BeeContext } from './providers/bee';
-import { Context as ChessContext } from './providers/chess-engine';
-import { uploadString } from './swarm-game-data';
+import { Context as BeeContext } from '../providers/bee';
+import { Context as ChessContext } from '../providers/chess-engine';
+import { uploadString } from '../utils/swarm-game-data';
 
 const zeroPostageId = '0000000000000000000000000000000000000000000000000000000000000000'
 

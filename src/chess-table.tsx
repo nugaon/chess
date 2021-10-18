@@ -36,22 +36,10 @@ export default function HumanVsHuman () {
     if(pieceSquare) {
       css[pieceSquare] = { backgroundColor: 'rgba(255, 255, 0, 0.4)' }
     }
-  
-    return {
-      
-      ...(history.length && {
-        [sourceSquare]: {
-          backgroundColor: 'rgba(255, 255, 0, 0.4)'
-        }
-      }),
-      ...(history.length && {
-        [targetSquare]: {
-          backgroundColor: 'rgba(255, 255, 0, 0.4)'
-        }
-      })
-    };
+
+    return css
   }
-  
+
   // keep clicked square style and remove hint squares
   const removeHighlightSquare = () => {
     setSquareStyles(squareStyling({ pieceSquare, history }))
@@ -83,7 +71,7 @@ export default function HumanVsHuman () {
   };
 
   const onDrop = ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square, targetSquare: Square, piece: Piece }): void => {
-    // const { sourceSquare, targetSquare, piece } = obj 
+    // const { sourceSquare, targetSquare, piece } = obj
     // see if the move is legal
     let move = game.move({
       from: sourceSquare,
@@ -145,9 +133,9 @@ export default function HumanVsHuman () {
   };
 
   const onSquareClick = (square: Square) => {
-    setSquareStyles(squareStyling({ pieceSquare: square, history }))
     setPieceSquare(square)
-    
+    setSquareStyles(squareStyling({ pieceSquare: square, history }))
+
     if(!pieceSquare) return
 
     let move = game.move({
@@ -159,17 +147,17 @@ export default function HumanVsHuman () {
     // illegal move
     if (move === null) return;
 
-    
+
     setFen(game.fen())
     setHistory(game.history({ verbose: true }))
-    setPieceSquare('a1')
+    setPieceSquare(null)
   };
 
   const onSquareRightClick = (square: Square) =>
     setSquareStyles({ [square]: { backgroundColor: 'deepPink' } })
 
   return (
-    <div style={{ 
+    <div style={{
       height: '100%',
       display: 'flex',
       justifyContent: 'center',

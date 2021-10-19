@@ -1,3 +1,4 @@
+import { Bee, Data } from '@ethersphere/bee-js'
 import { ChessInstance } from 'chess-types'
 import * as Chess from 'chess.js'
 import { createContext, ReactChild, ReactElement, useContext, useEffect, useState } from 'react'
@@ -21,13 +22,23 @@ interface Props {
   children: ReactChild | ReactChild[]
 }
 
+async function downloadDataFromSwarm(bee: Bee, hash: string): Promise<Data> {
+  try {
+    return bee.downloadData(hash)
+  } catch(e) {
+    throw Error(`The base hash is not retrievable from the Swarm network. Bee node address: ${bee.url}`)
+  }
+}
+
 export function Provider({ children }: Props): ReactElement {
   const [game] = useState<ChessInstance>(initialValues.game)
   const [startingFen, setStartingFen] = useState<string>(initialValues.startingFen)
   const { bee } = useContext(BeeContext)
 
   const loadGameFromSwarm = async (hash: string) => {
-    const data = await bee.downloadData(hash)
+    if(!bee) return
+
+    const data = await downloadDataFromSwarm(bee, hash)
     try {
       const starting: SwarmGameData = data.json() as unknown as SwarmGameData
       for (const el of starting.history) {
@@ -48,7 +59,8 @@ export function Provider({ children }: Props): ReactElement {
     else {
       setStartingFen(game.fen())
     }
-  }, [game])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game, bee])
 
   return (
     <Context.Provider value={{ game, startingFen }}>

@@ -1,5 +1,4 @@
-import type { Bee } from '@ethersphere/bee-js';
-import type { ChessInstance, Move } from 'chess-types';
+import type { Move } from 'chess-types';
 import { useContext, useState } from 'react';
 import { Context as BeeContext, zeroPostageId } from '../providers/bee';
 import { Context as ChessContext } from '../providers/chess-engine';
@@ -15,7 +14,9 @@ export default function Menu() {
   const [stateHash, setStateHash] = useState('')
   const [stateUrl, setStateUrl] = useState('')
 
-  async function uploadToSwarm(bee: Bee, game: ChessInstance) {
+  async function uploadToSwarm() {
+    if(!bee) return
+
     const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen(), game.history()))
     setStateUrl(setSwarmHashToUrl(resp.reference))
     setStateHash(resp.reference)
@@ -24,7 +25,7 @@ export default function Menu() {
   return (
   <div>
     <div>
-      <button onClick={() => uploadToSwarm(bee, game)}>Upload to Swarm</button>
+      <button onClick={() => uploadToSwarm()}>Upload to Swarm</button>
     </div>
     <div>
       <button onClick={() => alert(printHistory(game.history({verbose: true})))}>History</button>

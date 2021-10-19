@@ -13,7 +13,7 @@ function App() {
           <Menu></Menu>
           <ChessTable></ChessTable>
         </ChessEngine>
-        </Bee>
+      </Bee>
     </div>
   );
 }

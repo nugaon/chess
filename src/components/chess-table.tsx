@@ -2,6 +2,7 @@ import { Square } from 'chess-types';
 import Chessboard from 'chessboardjsx';
 import { useContext, useEffect, useState } from 'react';
 import { Context as ChessContext } from '../providers/chess-engine';
+import { Context as isAIcheckedContext } from '../providers/ai-checked';
 
 type Piece =
   'wP' | 'wN' | 'wB' | 'wR' | 'wQ' | 'wK' |
@@ -15,6 +16,7 @@ export default function HumanVsHuman () {
   const [pieceSquare, setPieceSquare] = useState<Square | null>(null)
   const [history, setHistory] = useState<Array<any>>([])
   const { game, startingFen } = useContext(ChessContext)
+  const isAIchecked = useContext(isAIcheckedContext);
 
   const squareStyling = ({ pieceSquare, history }: { pieceSquare: string | null, history: Array<any> }) => {
     const sourceSquare = history.length && history[history.length - 1].from;
@@ -72,6 +74,10 @@ export default function HumanVsHuman () {
 
   const onDrop = ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square, targetSquare: Square, piece: Piece }): void => {
     // const { sourceSquare, targetSquare, piece } = obj
+    if(isAIchecked){
+
+    }
+
     // see if the move is legal
     let move = game.move({
       from: sourceSquare,
@@ -83,6 +89,7 @@ export default function HumanVsHuman () {
     if (move === null) return;
 
     setFen(game.fen())
+    console.log(game.fen())
     setHistory(game.history({ verbose: true }))
     setSquareStyles(squareStyling({ pieceSquare, history }))
 

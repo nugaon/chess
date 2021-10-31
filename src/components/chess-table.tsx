@@ -92,7 +92,7 @@ export default function ChessTable() {
     setFen(game.fen())
     setAIMove('')
 
-    if (AIMove.includes("#") || AIMove.includes("++")) {
+    if (AIMove.includes("#") || AIMove.includes("++") || AIMove.includes("=")) {
       setCheckMate(true)
       setWinner('AI')
       //game.in_checkmate() ? setWinner('AI') : setWinner('Human')

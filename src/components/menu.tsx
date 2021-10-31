@@ -11,20 +11,14 @@ function printHistory(history: Move[]): string {
 }
 
 export default function Menu() {
-  const { bee } = useContext(BeeContext)
+
   const { game } = useContext(ChessContext)
   const { setChecked } = useContext(isAIcheckedContext)
   const [stateHash, setStateHash] = useState('')
   const [stateUrl, setStateUrl] = useState('')
-  const [checked, setCheckboxChecked ] = useState(false)
+  const [checked, setCheckboxChecked ] = useState(true)
 
-  async function uploadToSwarm() {
-    if (!bee) return
 
-    const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen(), game.history()))
-    setStateUrl(setSwarmHashToUrl(resp.reference))
-    setStateHash(resp.reference)
-  }
 
   const handleChange = () => {
     setChecked(!checked)
@@ -34,9 +28,9 @@ export default function Menu() {
   return (
 
     <div>
-      <div>
+      {/* <div>
         <button onClick={() => uploadToSwarm()}>Upload to Swarm</button>
-      </div>
+      </div> */}
       <div>
         <button onClick={() => alert(printHistory(game.history({ verbose: true })))}>History</button>
       </div>
@@ -45,7 +39,8 @@ export default function Menu() {
         <label>
           <input type="checkbox"
             checked={checked}
-            onChange={handleChange} />
+            onChange={handleChange
+            } />
           play with AI
         </label>
 

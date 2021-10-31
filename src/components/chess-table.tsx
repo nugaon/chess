@@ -3,20 +3,28 @@ import Chessboard from 'chessboardjsx';
 import { useContext, useEffect, useState } from 'react';
 import { Context as ChessContext } from '../providers/chess-engine';
 import { Context as isAIcheckedContext } from '../providers/ai-checked';
+import { Context as BeeContext, zeroPostageId } from '../providers/bee';
+import { setSwarmHashToUrl, uploadString } from '../utils/swarm-game-data';
+
+
 
 type Piece =
   'wP' | 'wN' | 'wB' | 'wR' | 'wQ' | 'wK' |
   'bP' | 'bN' | 'bB' | 'bR' | 'bQ' | 'bK'
 ;
 
-export default function HumanVsHuman () {
+export default function ChessTable() {
+
   const [fen, setFen] = useState<string>('start')
   const [dropSquareStyle, setDropSquareStyle] = useState<any>({})
   const [squareStyles, setSquareStyles] = useState<any>({})
   const [pieceSquare, setPieceSquare] = useState<Square | null>(null)
   const [history, setHistory] = useState<Array<any>>([])
   const { game, startingFen } = useContext(ChessContext)
+  const { bee } = useContext(BeeContext)
   const isAIchecked = useContext(isAIcheckedContext);
+  const [checkMate, setCheckMate ] = useState(false)
+  const [winnder, setWinner] = useState('')
 
   const squareStyling = ({ pieceSquare, history }: { pieceSquare: string | null, history: Array<any> }) => {
     const sourceSquare = history.length && history[history.length - 1].from;
@@ -68,16 +76,68 @@ export default function HumanVsHuman () {
       },
       {}
     );
-
     setSquareStyles({...squareStyles, ...highlightStyles})
   };
 
+  //const { setChecked } = useContext(isAIcheckedContext)
+  const [stateHash, setStateHash] = useState('')
+  const [stateUrl, setStateUrl] = useState('')
+  //const [checked, setCheckboxChecked ] = useState(false)
+  const [AIMove, setAIMove ] = useState('')
+
+  if (AIMove!=='') {
+    console.log("AI Move: "+AIMove)
+
+    game.move(AIMove)
+    setFen(game.fen())
+    setAIMove('')
+
+    if (AIMove.includes("#") || AIMove.includes("++")) {
+      setCheckMate(true)
+      setWinner('AI')
+      //game.in_checkmate() ? setWinner('AI') : setWinner('Human')
+      console.log(game.in_checkmate())
+      console.log(game.history())
+      alert("  --== ALL HAIL H.A.L. ==--  ")
+    }
+  }
+  async function getAIMove(fen:any){
+
+      fetch('http://localhost:6969', {
+        //signal: controller.signal,
+      //mode: 'no-cors',
+      method: 'POST',
+      // headers: {
+      //   'Accept': 'application/json',
+      //   'Content-Type': 'application/json'
+      // },
+      body: JSON.stringify({
+        "FenString": fen
+      })
+    }).then(( response ) => response.json( ))
+    .then(( data ) => {
+        setAIMove(data['AI Move'])
+        return  data.json})
+  }
+
+
+  async function uploadToSwarm(){
+    if (!bee) return
+
+    const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen(), game.history()))
+    setStateUrl(setSwarmHashToUrl(resp.reference))
+
+    setStateHash(resp.reference)
+
+    //console.log(game.fen())
+    await getAIMove(game.fen())
+
+  }
+
   const onDrop = ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square, targetSquare: Square, piece: Piece }): void => {
     // const { sourceSquare, targetSquare, piece } = obj
-    if(isAIchecked){
 
-    }
-
+    //console.log(browser_history)
     // see if the move is legal
     let move = game.move({
       from: sourceSquare,
@@ -88,10 +148,16 @@ export default function HumanVsHuman () {
     // illegal move
     if (move === null) return;
 
+
+    if(isAIchecked){
+      uploadToSwarm()
+    }
+
     setFen(game.fen())
     console.log(game.fen())
+
     setHistory(game.history({ verbose: true }))
-    setSquareStyles(squareStyling({ pieceSquare, history }))
+    //setSquareStyles(squareStyling({ pieceSquare, history }))
 
     // const notKnights = piece !== 'wN' && piece !== 'bN';
     // notKnights && game.undo();
@@ -141,7 +207,7 @@ export default function HumanVsHuman () {
 
   const onSquareClick = (square: Square) => {
     setPieceSquare(square)
-    setSquareStyles(squareStyling({ pieceSquare: square, history }))
+    //setSquareStyles(squareStyling({ pieceSquare: square, history }))
 
     if(!pieceSquare) return
 
@@ -154,14 +220,17 @@ export default function HumanVsHuman () {
     // illegal move
     if (move === null) return;
 
-
+    if(isAIchecked){
+      uploadToSwarm()
+    }
     setFen(game.fen())
+
     setHistory(game.history({ verbose: true }))
     setPieceSquare(null)
   };
 
-  const onSquareRightClick = (square: Square) =>
-    setSquareStyles({ [square]: { backgroundColor: 'deepPink' } })
+  //const onSquareRightClick = (square: Square) =>
+    //setSquareStyles({ [square]: { backgroundColor: 'deepPink' } })
 
   useEffect(() => {
     setFen(startingFen)
@@ -175,7 +244,7 @@ export default function HumanVsHuman () {
       alignItems: 'center'
     }}>
       <Chessboard
-        id="humanVsHuman"
+        id="ChessTable"
         calcWidth={({ screenWidth }) => (screenWidth < 500 ? 350 : 480)}
         position={fen}
         onDrop={onDrop}
@@ -189,7 +258,7 @@ export default function HumanVsHuman () {
         dropSquareStyle={dropSquareStyle}
         onDragOverSquare={onDragOverSquare}
         onSquareClick={onSquareClick}
-        onSquareRightClick={onSquareRightClick}
+        //onSquareRightClick={onSquareRightClick}
       />
     </div>
   )

@@ -2,6 +2,10 @@
 
 In the project directory, you can run:
 
+### `npm ci`
+
+Makes clean installation of dependencies
+
 ### `npm run start`
 
 Runs the app in the development mode.\

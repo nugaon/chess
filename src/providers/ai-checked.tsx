@@ -11,7 +11,7 @@ interface Props {
 
 export default function Provider({ children }: Props) {
 
-    const [checked, setChecked] = useState<boolean>(false)
+    const [checked, setChecked] = useState<boolean>(true)
     const value = useMemo(
         () => ({ checked, setChecked }),
         [checked]

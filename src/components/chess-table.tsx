@@ -121,23 +121,14 @@ export default function ChessTable() {
   }
 
 
-  async function uploadToSwarm(){
-    if (!bee) return
+  async function applyAIMove(){
 
-    const resp = await bee.uploadData(zeroPostageId, uploadString(game.fen(), game.history()))
-    setStateUrl(setSwarmHashToUrl(resp.reference))
-
-    setStateHash(resp.reference)
-
-    //console.log(game.fen())
     await getAIMove(game.fen())
 
   }
 
   const onDrop = ({ sourceSquare, targetSquare, piece }: { sourceSquare: Square, targetSquare: Square, piece: Piece }): void => {
-    // const { sourceSquare, targetSquare, piece } = obj
 
-    //console.log(browser_history)
     // see if the move is legal
     let move = game.move({
       from: sourceSquare,
@@ -149,32 +140,15 @@ export default function ChessTable() {
     if (move === null) return;
 
 
-    if(isAIchecked){
-      uploadToSwarm()
+    if(isAIchecked.checked){
+      applyAIMove()
     }
 
     setFen(game.fen())
     console.log(game.fen())
 
     setHistory(game.history({ verbose: true }))
-    //setSquareStyles(squareStyling({ pieceSquare, history }))
 
-    // const notKnights = piece !== 'wN' && piece !== 'bN';
-    // notKnights && game.undo();
-
-    // setTimeout(() => {
-    //   const notKnights = piece !== 'wN' && piece !== 'bN';
-    //   this.setState(({ history, pieceSquare }) => {
-    //     notKnights && this.game.undo();
-
-    //     return {
-    //       fen: this.game.fen(),
-    //       undo: notKnights ? true : false,
-    //       history: this.game.history({ verbose: true }),
-    //       squareStyles: squareStyling({ pieceSquare, history })
-    //     };
-    //   });
-    // }, 1000)
   }
 
   const onMouseOverSquare = (square: Square) => {
@@ -220,10 +194,12 @@ export default function ChessTable() {
     // illegal move
     if (move === null) return;
 
-    if(isAIchecked){
-      uploadToSwarm()
+    if(isAIchecked.checked){
+      applyAIMove()
     }
+
     setFen(game.fen())
+    console.log(game.fen())
 
     setHistory(game.history({ verbose: true }))
     setPieceSquare(null)

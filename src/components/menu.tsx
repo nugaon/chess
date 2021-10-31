@@ -10,6 +10,7 @@ function printHistory(history: Move[]): string {
   return JSON.stringify(history,)
 }
 
+
 export default function Menu() {
 
   const { game } = useContext(ChessContext)
@@ -32,7 +33,10 @@ export default function Menu() {
         <button onClick={() => uploadToSwarm()}>Upload to Swarm</button>
       </div> */}
       <div>
-        <button onClick={() => alert(printHistory(game.history({ verbose: true })))}>History</button>
+        <button onClick={() => alert(printHistory(game.history({ verbose: true })))}>Show History</button>
+      </div>
+      <div>
+        <button onClick={() => alert(game.fen())}>Show Fen</button>
       </div>
       <div>
 
